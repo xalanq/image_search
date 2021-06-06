@@ -34,12 +34,12 @@ type Image struct {
 	Path       string     `json:"path" binding:"required"`
 	URL        string     `json:"url" binding:"required"`
 	LandingURL string     `json:"landing_url" binding:"required"`
-	Labels     []string   `json:"labels"`
-	Title      string     `json:"title"`
+	Labels     []string   `json:"labels" binding:"required"`
+	Title      string     `json:"title" binding:"required"`
 	Size       int        `json:"size" binding:"required"`
 	Width      int        `json:"width" binding:"required"`
 	Height     int        `json:"height" binding:"required"`
-	Colors     []ColorHSL `json:"colors"`
+	Colors     []ColorHSL `json:"colors" binding:"required"`
 }
 
 var images map[string]*Image
