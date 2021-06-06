@@ -1,0 +1,14 @@
+github.com/EdlinOrg/prominentcolor v1.0.0 h1:sQNY8Dtsv3PK3J1LbmrDmtlZm9Y9U8Loi1iZIl4YN3Y=
+github.com/EdlinOrg/prominentcolor v1.0.0/go.mod h1:mYmDsxfcmBz6izH/SqtSzfsUiZdPNPpPgUPKCZq70KQ=
+github.com/h2non/bimg v1.1.5 h1:o3xsUBxM8s7+e7PmpiWIkEYdeYayJ94eh4cJLx67m1k=
+github.com/h2non/bimg v1.1.5/go.mod h1:R3+UiYwkK4rQl6KVFTOFJHitgLbZXBZNFh2cv3AEbp8=
+github.com/lucasb-eyer/go-colorful v1.2.0 h1:1nnpGOrhyZZuNyfu1QjKiUICQ74+3FNCN69Aj6K7nkY=
+github.com/lucasb-eyer/go-colorful v1.2.0/go.mod h1:R4dSotOR9KMtayYi1e77YzuveK+i7ruzyGqttikkLy0=
+github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646 h1:zYyBkD/k9seD2A7fsi6Oo2LfFZAehjjQMERAvZLEDnQ=
+github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646/go.mod h1:jpp1/29i3P1S/RLdc7JQKbRpFeM1dOBd8T9ki5s+AY8=
+github.com/oliamb/cutter v0.2.2 h1:Lfwkya0HHNU1YLnGv2hTkzHfasrSMkgv4Dn+5rmlk3k=
+github.com/oliamb/cutter v0.2.2/go.mod h1:4BenG2/4GuRBDbVm/OPahDVqbrOemzpPiG5mi1iryBU=
+github.com/xalanq/prominentcolor v1.0.0 h1:1gnIT59uJwGETnQN6+SZT6BnR+y7qqp04hyLKQ4PO8A=
+github.com/xalanq/prominentcolor v1.0.0/go.mod h1:bHtvEXW91BYnYu5rZVEK8vDHgbHbw33aQasZgBByUfo=
+github.com/xalanq/prominentcolor v1.0.1-0.20210606043927-533521d3a0b0 h1:phvT/Ce8Z3GwoHtIMG4kSoiLGcSi+Q4YtZdA228WX1w=
+github.com/xalanq/prominentcolor v1.0.1-0.20210606043927-533521d3a0b0/go.mod h1:BDCLSTDGwJZSMB0QnwH5UW+tMGJ+U8J5er+ARgMATDs=
