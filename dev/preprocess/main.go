@@ -138,12 +138,23 @@ func read_image_color() {
 					return
 				}
 				func() {
-
+					defer func() {
+						i := atomic.AddInt64(&counter, 1)
+						if i%100 == 0 {
+							fmt.Printf("%v/%v, %.2f%%, cost: %v, estimate: %v\n", i, total, float64(i)/float64(total)*100, time.Now().Sub(begin).String(), time.Duration(float64(time.Now().Sub(begin))/float64(i)*float64(total-i)).String())
+						}
+					}()
 					name := f.Name()
 					if name[len(name)-4:] != ".jpg" {
 						panic("gg")
 					}
 					id := name[:len(name)-4]
+					/*
+						if len(images[id].Colors) != 0 {
+							return
+						}
+					*/
+
 					file, err := os.Open("../data/train_0/" + name)
 					defer file.Close()
 					if err != nil {
@@ -169,10 +180,6 @@ func read_image_color() {
 						})
 					}
 					images[id].Colors = colorhsls
-					i := atomic.AddInt64(&counter, 1)
-					if i%100 == 0 {
-						fmt.Printf("%v/%v, %.2f%%, cost: %v, estimate: %v\n", i+1, total, float64(i+1)/float64(total)*100, time.Now().Sub(begin).String(), time.Duration(float64(time.Now().Sub(begin))/float64(i+1)*float64(total-i-1)).String())
-					}
 				}()
 			}
 		}()
@@ -181,6 +188,7 @@ func read_image_color() {
 	for _, file := range files {
 		ch <- file
 	}
+	close(ch)
 	wg.Wait()
 }
 
