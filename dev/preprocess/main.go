@@ -172,7 +172,7 @@ func read_image_color() {
 					colorhsls := []ColorHSL{}
 					for _, color := range colors {
 						h, s, l := colorful.Color{R: float64(color.Color.R) / 255.0, G: float64(color.Color.G) / 255.0, B: float64(color.Color.B) / 255.0}.Hsl()
-						colorhsls = append(images[id].Colors, ColorHSL{
+						colorhsls = append(colorhsls, ColorHSL{
 							H:     h,
 							S:     s,
 							L:     l,
