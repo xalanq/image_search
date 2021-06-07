@@ -10,6 +10,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"path"
 	"runtime"
 	"strconv"
 	"strings"
@@ -21,6 +22,14 @@ import (
 	"github.com/h2non/bimg"
 	"github.com/lucasb-eyer/go-colorful"
 	"github.com/xalanq/prominentcolor"
+)
+
+const (
+	dataSavedPath   = "../data/images.json"
+	imagesPath      = "../data/train_0"
+	labelsPath      = "../data/class-descriptions-boxable.csv"
+	imageLabelsPath = "../data/train-annotations-human-imagelabels-boxable.csv"
+	imageMetasPath  = "../data/oidv6-train-images-with-labels-with-rotation.csv"
 )
 
 type ColorHSL struct {
@@ -45,7 +54,7 @@ type Image struct {
 var images map[string]*Image
 
 func load() {
-	b, err := ioutil.ReadFile("images.json")
+	b, err := ioutil.ReadFile(dataSavedPath)
 	if err != nil {
 		images = make(map[string]*Image)
 		return
@@ -60,14 +69,14 @@ func save() {
 	if err != nil {
 		panic(err)
 	}
-	err = ioutil.WriteFile("images.json", b, 0644)
+	err = ioutil.WriteFile(dataSavedPath, b, 0644)
 	if err != nil {
 		panic(err)
 	}
 }
 
 func read_image_list() {
-	files, err := ioutil.ReadDir("../data/train_0")
+	files, err := ioutil.ReadDir(imagesPath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -85,7 +94,7 @@ func read_image_list() {
 }
 
 func read_image_size() {
-	files, err := ioutil.ReadDir("../data/train_0")
+	files, err := ioutil.ReadDir(imagesPath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -100,7 +109,7 @@ func read_image_size() {
 		}
 		id := name[:len(name)-4]
 
-		buffer, err := bimg.Read("../data/train_0/" + name)
+		buffer, err := bimg.Read(path.Join(imagesPath, name))
 		if err != nil {
 			panic(err)
 		}
@@ -116,7 +125,7 @@ func read_image_size() {
 }
 
 func read_image_color() {
-	files, err := ioutil.ReadDir("../data/train_0")
+	files, err := ioutil.ReadDir(imagesPath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -155,7 +164,7 @@ func read_image_color() {
 						}
 					*/
 
-					file, err := os.Open("../data/train_0/" + name)
+					file, err := os.Open(path.Join(imagesPath, name))
 					defer file.Close()
 					if err != nil {
 						panic(err)
@@ -195,7 +204,7 @@ func read_image_color() {
 var labels map[string]string
 
 func read_label() {
-	data, err := ioutil.ReadFile("../data/class-descriptions-boxable.csv")
+	data, err := ioutil.ReadFile(labelsPath)
 	if err != nil {
 		panic(err)
 	}
@@ -212,7 +221,7 @@ func read_label() {
 }
 
 func read_image_label() {
-	data, err := ioutil.ReadFile("../data/train-annotations-human-imagelabels-boxable.csv")
+	data, err := ioutil.ReadFile(imageLabelsPath)
 	if err != nil {
 		panic(err)
 	}
@@ -234,7 +243,7 @@ func read_image_label() {
 }
 
 func read_image_meta() {
-	data, err := ioutil.ReadFile("../data/oidv6-train-images-with-labels-with-rotation.csv")
+	data, err := ioutil.ReadFile(imageMetasPath)
 	if err != nil {
 		panic(err)
 	}
