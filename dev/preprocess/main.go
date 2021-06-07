@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
@@ -21,6 +22,7 @@ import (
 
 	"github.com/h2non/bimg"
 	"github.com/lucasb-eyer/go-colorful"
+	"github.com/olivere/elastic/v7"
 	"github.com/xalanq/prominentcolor"
 )
 
@@ -30,6 +32,39 @@ const (
 	labelsPath      = "../data/class-descriptions-boxable.csv"
 	imageLabelsPath = "../data/train-annotations-human-imagelabels-boxable.csv"
 	imageMetasPath  = "../data/oidv6-train-images-with-labels-with-rotation.csv"
+
+	esURL     = "http://127.0.0.1:9200"
+	esIndex   = "image"
+	esMapping = `
+{
+	"settings": 
+	{
+		"number_of_shards": 1,
+		"number_of_replicas": 0
+	},
+	"mappings": {
+		"properties": {
+			"path": {"type": "text", "index": false},
+			"url": {"type": "text", "index": false},
+			"landing_url": {"type": "text", "index": false},
+			"labels": {"type": "text"},
+			"title": {"type": "text"},
+			"size": {"type": "long", "index": false},
+			"width": {"type": "long"},
+			"height": {"type": "long"},
+			"colors": {
+				"type": "nested",
+				"properties": {
+					"h": {"type": "double"},
+					"s": {"type": "double"},
+					"l": {"type": "double"},
+					"ratio": {"type": "double"}
+				}
+			}
+		}
+	}
+}
+`
 )
 
 type ColorHSL struct {
@@ -150,7 +185,7 @@ func read_image_color() {
 					defer func() {
 						i := atomic.AddInt64(&counter, 1)
 						if i%100 == 0 {
-							fmt.Printf("%v/%v, %.2f%%, cost: %v, estimate: %v\n", i, total, float64(i)/float64(total)*100, time.Now().Sub(begin).String(), time.Duration(float64(time.Now().Sub(begin))/float64(i)*float64(total-i)).String())
+							fmt.Printf("%v/%v, %.2f%%, spent: %v, estimate: %v\n", i, total, float64(i)/float64(total)*100, time.Now().Sub(begin).String(), time.Duration(float64(time.Now().Sub(begin))/float64(i)*float64(total-i)).String())
 						}
 					}()
 					name := f.Name()
@@ -267,6 +302,81 @@ func read_image_meta() {
 	}
 }
 
+func import_data_to_es() {
+	ctx := context.Background()
+	client, err := elastic.NewSimpleClient(elastic.SetURL(esURL))
+	if err != nil {
+		panic(err)
+	}
+	_, _, err = client.Ping(esURL).Do(ctx)
+	if err != nil {
+		panic(err)
+	}
+
+	exists, err := client.IndexExists(esIndex).Do(ctx)
+	if err != nil {
+		panic(err)
+	}
+	if exists {
+		client.DeleteIndex(esIndex).Do(ctx)
+	}
+	_, err = client.CreateIndex(esIndex).BodyString(esMapping).Do(ctx)
+	if err != nil {
+		panic(err)
+	}
+
+	total := int64(len(images))
+	begin := time.Now()
+
+	numberOfGoroutine := runtime.GOMAXPROCS(2)
+	type Data struct {
+		ID    string
+		Image *Image
+	}
+	ch := make(chan Data, numberOfGoroutine)
+	wg := sync.WaitGroup{}
+	wg.Add(numberOfGoroutine)
+	counter := int64(0)
+
+	for gid := 0; gid < numberOfGoroutine; gid++ {
+		go func() {
+			for {
+				f, ok := <-ch
+				if !ok {
+					wg.Done()
+					return
+				}
+				func() {
+					defer func() {
+						i := atomic.AddInt64(&counter, 1)
+						if i%100 == 0 {
+							fmt.Printf("%v/%v, %.2f%%, spent: %v, estimate: %v\n", i, total, float64(i)/float64(total)*100, time.Now().Sub(begin).String(), time.Duration(float64(time.Now().Sub(begin))/float64(i)*float64(total-i)).String())
+						}
+					}()
+
+					id := f.ID
+					image := f.Image
+
+					_, err := client.Index().Index(esIndex).Id(id).BodyJson(image).Do(ctx)
+					if err != nil {
+						panic(err)
+					}
+				}()
+			}
+		}()
+	}
+
+	// send data to ch
+	for id, image := range images {
+		ch <- Data{
+			ID:    id,
+			Image: image,
+		}
+	}
+	close(ch)
+	wg.Wait()
+}
+
 func setClose() {
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
@@ -288,4 +398,5 @@ func main() {
 	read_image_meta()
 	read_image_size()
 	read_image_color()
+	import_data_to_es()
 }
