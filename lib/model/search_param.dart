@@ -33,6 +33,7 @@ class SizeParam {
   }
 }
 
+const SizeAny = SizeParam(null, null, null, null);
 const SizeSmall = SizeParam(null, 300, null, 300);
 const SizeMedium = SizeParam(300, 1000, 300, 1000);
 const SizeLarge = SizeParam(1000, 3000, 1000, 3000);
@@ -93,9 +94,9 @@ class ColorParam {
 }
 
 class SearchParam {
-  final String? text;
-  final SizeParam? size;
-  final ColorParam? color;
+  String? text;
+  SizeParam? size;
+  ColorParam? color;
   int skip;
   int limit;
 

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:image_search/model/search_param.dart';
 import 'package:image_search/page/image_waterfall.dart';
 
 void main() {
@@ -10,35 +9,34 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Image Search',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.grey,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: HomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+class HomePage extends StatefulWidget {
+  HomePage({Key? key}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var param = SearchParam(
-      text: "cat",
-      // color: ColorParam.color(null, null, 1),
-      // size: Size1024x768,
-    );
     return Scaffold(
-      body: ImageWaterfall(param),
+      body: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: ImageWaterfall(),
+      ),
     );
   }
 }

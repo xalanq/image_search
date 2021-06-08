@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:color/color.dart' as convert_color;
 import 'package:extended_image/extended_image.dart';
@@ -19,52 +20,110 @@ class ImageItem extends StatefulWidget {
   State<StatefulWidget> createState() => _ImageItemState();
 }
 
+String formatBytes(int bytes, int decimals) {
+  if (bytes <= 0) return "0 B";
+  const suffixes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+  var i = (log(bytes) / log(1024)).floor();
+  return ((bytes / pow(1024, i)).toStringAsFixed(decimals)) + ' ' + suffixes[i];
+}
+
 class _ImageItemState extends State<ImageItem> {
+  bool _isHover = false;
+
   @override
   Widget build(BuildContext context) {
     final image = widget.image;
     final imageURL = path.join(Consts.imageHost, image.path);
-    print(image.title + " " + jsonEncode(image.colors[0]));
     final dominantColor =
         convert_color.HslColor(image.colors[0].h, image.colors[0].s * 100, image.colors[0].l * 100).toRgbColor();
     return Column(
       mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          child: AspectRatio(
-            aspectRatio: image.width / image.height,
-            child: ExtendedImage.network(
-              imageURL,
-              // image.url,
-              shape: BoxShape.rectangle,
-              //clearMemoryCacheWhenDispose: true,
-              loadStateChanged: (ExtendedImageState value) {
-                if (value.extendedImageLoadState == LoadState.loading) {
-                  return Container(
-                    color: Color.fromRGBO(dominantColor.r.toInt(), dominantColor.g.toInt(), dominantColor.b.toInt(), 1),
-                  );
-                }
-                return null;
-              },
-            ),
+        InkWell(
+          child: Stack(
+            children: <Widget>[
+              AspectRatio(
+                aspectRatio: image.width / image.height,
+                child: ExtendedImage.network(
+                  imageURL,
+                  // image.url,
+                  shape: BoxShape.rectangle,
+                  //clearMemoryCacheWhenDispose: true,
+                  loadStateChanged: (ExtendedImageState value) {
+                    if (value.extendedImageLoadState == LoadState.loading) {
+                      return Container(
+                        color: Color.fromRGBO(
+                            dominantColor.r.toInt(), dominantColor.g.toInt(), dominantColor.b.toInt(), 1),
+                      );
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              if (_isHover)
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: Opacity(
+                    opacity: 0.6,
+                    child: Container(
+                      color: Colors.black,
+                      padding: EdgeInsets.only(top: 5, bottom: 5),
+                      child: Text(
+                        '${image.width}x${image.height}  ${formatBytes(image.size, 2)}',
+                        maxLines: 1,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              if (_isHover)
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                    padding: EdgeInsets.only(top: 5, bottom: 5),
+                    child: Text(
+                      '${image.width}x${image.height}  ${formatBytes(image.size, 2)}',
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
           ),
           onTap: () {
             launch(imageURL);
           },
+          onHover: (value) {
+            setState(() {
+              _isHover = value;
+            });
+          },
         ),
-        SizedBox(height: 5),
-        GestureDetector(
-          behavior: HitTestBehavior.translucent,
+        InkWell(
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              SizedBox(height: 10),
               ExtendedText(
                 image.title,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 14,
                   fontWeight: FontWeight.w500,
                   color: Colors.black,
                 ),
@@ -74,17 +133,19 @@ class _ImageItemState extends State<ImageItem> {
               ),
               SizedBox(height: 5),
               ExtendedText(
-                image.url,
+                Uri.parse(image.landingURL).host,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
+                softWrap: true,
                 style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
+                  fontSize: 10,
+                  color: Colors.black87,
                 ),
                 onTap: () {
                   launch(image.landingURL);
                 },
               ),
+              SizedBox(height: 8),
             ],
           ),
           onTap: () {

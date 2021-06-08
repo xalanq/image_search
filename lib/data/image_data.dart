@@ -8,11 +8,11 @@ import 'package:image_search/model/search_param.dart';
 import 'package:loading_more_list/loading_more_list.dart';
 
 class ImageData extends LoadingMoreBase<ImageResult> {
-  SearchParam param;
+  SearchParam param = SearchParam();
   bool _hasMore = true;
   bool forceRefresh = false;
 
-  ImageData(this.param);
+  ImageData();
 
   @override
   bool get hasMore => _hasMore || forceRefresh;
@@ -33,7 +33,6 @@ class ImageData extends LoadingMoreBase<ImageResult> {
     bool isSuccess = false;
     try {
       String body = param.body();
-      print(body);
       final result = await HttpClientHelper.post(
         Uri.parse(Consts.searchURL),
         headers: {
