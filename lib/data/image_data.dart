@@ -41,10 +41,12 @@ class ImageData extends LoadingMoreBase<ImageResult> {
         body: body,
       );
       if (result != null) {
-        final hits = (jsonDecode(result.body)["hits"] as Map<String, dynamic>)["hits"] as List<dynamic>;
+        final hits = (jsonDecode(result.body)["hits"]
+            as Map<String, dynamic>)["hits"] as List<dynamic>;
         List<ImageResult> list = [];
         for (final hit in hits) {
-          list.add(ImageResult.fromJson((hit as Map<String, dynamic>)["_source"] as Map<String, dynamic>));
+          list.add(ImageResult.fromJson((hit as Map<String, dynamic>)["_source"]
+              as Map<String, dynamic>));
         }
         _hasMore = list.isNotEmpty;
         param.skip += min(param.limit, list.length);

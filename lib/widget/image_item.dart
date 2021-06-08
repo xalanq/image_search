@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:color/color.dart' as convert_color;
@@ -34,8 +33,9 @@ class _ImageItemState extends State<ImageItem> {
   Widget build(BuildContext context) {
     final image = widget.image;
     final imageURL = path.join(Consts.imageHost, image.path);
-    final dominantColor =
-        convert_color.HslColor(image.colors[0].h, image.colors[0].s * 100, image.colors[0].l * 100).toRgbColor();
+    final dominantColor = convert_color.HslColor(
+            image.colors[0].h, image.colors[0].s * 100, image.colors[0].l * 100)
+        .toRgbColor();
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,7 +54,10 @@ class _ImageItemState extends State<ImageItem> {
                     if (value.extendedImageLoadState == LoadState.loading) {
                       return Container(
                         color: Color.fromRGBO(
-                            dominantColor.r.toInt(), dominantColor.g.toInt(), dominantColor.b.toInt(), 1),
+                            dominantColor.r.toInt(),
+                            dominantColor.g.toInt(),
+                            dominantColor.b.toInt(),
+                            1),
                       );
                     }
                     return null;

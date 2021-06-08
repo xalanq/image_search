@@ -28,6 +28,7 @@ class ImageResult {
     this.colors,
   );
 
-  factory ImageResult.fromJson(Map<String, dynamic> json) => _$ImageResultFromJson(json);
+  factory ImageResult.fromJson(Map<String, dynamic> json) =>
+      _$ImageResultFromJson(json);
   Map<String, dynamic> toJson() => _$ImageResultToJson(this);
 }

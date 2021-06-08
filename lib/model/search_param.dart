@@ -1,12 +1,7 @@
-
-
 String rangeQuery<T extends num>(String name, T? min, T? max) {
-  if (max == null)
-    return '{"range": {"$name": {"gte": $min}}}';
-  if (min == null)
-    return '{"range": {"$name": {"lte": $max}}}';
-  if (min <= max)
-    return '{"range": {"$name": {"gte": $min, "lte": $max}}}';
+  if (max == null) return '{"range": {"$name": {"gte": $min}}}';
+  if (min == null) return '{"range": {"$name": {"lte": $max}}}';
+  if (min <= max) return '{"range": {"$name": {"gte": $min, "lte": $max}}}';
   return '{"bool": {"should": [{"range": {"$name": {"lte": $max}}}, {"range": {"$name": {"gte": $min}}}]}}';
 }
 
@@ -24,11 +19,12 @@ class SizeParam {
         heightMin = height,
         heightMax = height;
 
-
   List<String> queries() {
     List<String> queries = [];
-    if (widthMin != null || widthMax != null) queries.add(rangeQuery("width", widthMin, widthMax));
-    if (heightMin != null || heightMax != null) queries.add(rangeQuery("height", heightMin, heightMax));
+    if (widthMin != null || widthMax != null)
+      queries.add(rangeQuery("width", widthMin, widthMax));
+    if (heightMin != null || heightMax != null)
+      queries.add(rangeQuery("height", heightMin, heightMax));
     return queries;
   }
 }
@@ -74,8 +70,16 @@ class ColorParam {
   );
 
   const ColorParam.color(double? h, double? s, double? l)
-      : hMin = h == null ? null : h - hDelta < 0 ? h + 360 - hDelta : h - hDelta,
-        hMax = h == null ? null : h + hDelta > 360 ? h + hDelta - 360 : h + hDelta,
+      : hMin = h == null
+            ? null
+            : h - hDelta < 0
+                ? h + 360 - hDelta
+                : h - hDelta,
+        hMax = h == null
+            ? null
+            : h + hDelta > 360
+                ? h + hDelta - 360
+                : h + hDelta,
         sMin = s == null ? null : s - sDelta,
         sMax = s == null ? null : s + sDelta,
         lMin = l == null ? null : l - lDelta,
@@ -85,11 +89,17 @@ class ColorParam {
 
   List<String> queries() {
     List<String> filters = [];
-    if (hMin != null || hMax != null) filters.add(rangeQuery("colors.h", hMin, hMax));
-    if (sMin != null || sMax != null) filters.add(rangeQuery("colors.s", sMin, sMax));
-    if (lMin != null || lMax != null) filters.add(rangeQuery("colors.l", lMin, lMax));
-    if (ratioMin != null || ratioMax != null) filters.add(rangeQuery("colors.ratio", ratioMin, ratioMax));
-    return ['{"nested": {"path": "colors", "query": {"bool": {"filter": [${filters.join(",")}]}}}}'];
+    if (hMin != null || hMax != null)
+      filters.add(rangeQuery("colors.h", hMin, hMax));
+    if (sMin != null || sMax != null)
+      filters.add(rangeQuery("colors.s", sMin, sMax));
+    if (lMin != null || lMax != null)
+      filters.add(rangeQuery("colors.l", lMin, lMax));
+    if (ratioMin != null || ratioMax != null)
+      filters.add(rangeQuery("colors.ratio", ratioMin, ratioMax));
+    return [
+      '{"nested": {"path": "colors", "query": {"bool": {"filter": [${filters.join(",")}]}}}}'
+    ];
   }
 }
 
@@ -112,9 +122,14 @@ class SearchParam {
     List<String> filterQueries = [];
     if (size != null) filterQueries.addAll(size!.queries());
     if (color != null) filterQueries.addAll(color!.queries());
-    String? must = text == null ? null : '"must": [{"match": {"labels": "$text"}}]';
-    String? filter = filterQueries.isEmpty ? null : '"filter": [${filterQueries.join(",")}]';
-    String query = '"query": {"bool": {${[must, filter].where((e) => e != null).join(",")}}}';
+    String? must =
+        text == null ? null : '"must": [{"match": {"labels": "$text"}}]';
+    String? filter =
+        filterQueries.isEmpty ? null : '"filter": [${filterQueries.join(",")}]';
+    String query = '"query": {"bool": {${[
+      must,
+      filter
+    ].where((e) => e != null).join(",")}}}';
     String from = '"from": $skip';
     String sz = '"size": $limit';
     return '{${[from, sz, query].join(",")}}';
