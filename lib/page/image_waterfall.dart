@@ -179,14 +179,6 @@ class _ImageWaterfallState extends State<ImageWaterfall> {
               maxCrossAxisExtent: 300,
               crossAxisSpacing: 16,
               mainAxisSpacing: 16,
-              collectGarbage: (List<int> garbages) {
-                garbages.forEach((index) {
-                  final provider = ExtendedNetworkImageProvider(
-                    data[index].imageURL,
-                  );
-                  provider.evict();
-                });
-              },
             ),
             itemBuilder: (context, item, index) => ImageItem(item),
             sourceList: data,

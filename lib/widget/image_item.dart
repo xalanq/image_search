@@ -43,7 +43,6 @@ class _ImageItemState extends State<ImageItem> {
                 aspectRatio: image.width / image.height,
                 child: ExtendedImage.network(
                   image.imageURL,
-                  // image.url,
                   shape: BoxShape.rectangle,
                   //clearMemoryCacheWhenDispose: true,
                   loadStateChanged: (ExtendedImageState value) {
