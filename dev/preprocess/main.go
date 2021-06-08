@@ -36,34 +36,97 @@ const (
 	esURL     = "http://127.0.0.1:9200"
 	esIndex   = "image"
 	esMapping = `
-{
-	"settings": 
-	{
-		"number_of_shards": 1,
-		"number_of_replicas": 0
-	},
-	"mappings": {
-		"properties": {
-			"path": {"type": "text", "index": false},
-			"url": {"type": "text", "index": false},
-			"landing_url": {"type": "text", "index": false},
-			"labels": {"type": "text"},
-			"title": {"type": "text"},
-			"size": {"type": "long", "index": false},
-			"width": {"type": "long"},
-			"height": {"type": "long"},
-			"colors": {
-				"type": "nested",
-				"properties": {
-					"h": {"type": "double"},
-					"s": {"type": "double"},
-					"l": {"type": "double"},
-					"ratio": {"type": "double"}
-				}
+	  {
+		"settings": {
+		  "number_of_shards": 1,
+		  "number_of_replicas": 0,
+		  "analysis": {
+			"filter": {
+			  "english_stop": {
+				"type": "stop",
+				"stopwords": "_english_"
+			  },
+			  "english_keywords": {
+				"type": "keyword_marker",
+				"keywords": [
+				  "example"
+				]
+			  },
+			  "english_stemmer": {
+				"type": "stemmer",
+				"language": "english"
+			  },
+			  "english_possessive_stemmer": {
+				"type": "stemmer",
+				"language": "possessive_english"
+			  }
+			},
+			"analyzer": {
+			  "rebuilt_english": {
+				"tokenizer": "standard",
+				"filter": [
+				  "english_possessive_stemmer",
+				  "lowercase",
+				  "english_stop",
+				  "english_keywords",
+				  "english_stemmer"
+				]
+			  }
 			}
+		  }
+		},
+		"mappings": {
+		  "properties": {
+			"path": {
+			  "type": "text",
+			  "index": false
+			},
+			"url": {
+			  "type": "text",
+			  "index": false
+			},
+			"landing_url": {
+			  "type": "text",
+			  "index": false
+			},
+			"labels": {
+			  "type": "text",
+			  "analyzer": "rebuilt_english"
+			},
+			"title": {
+			  "type": "text",
+			  "analyzer": "rebuilt_english"
+			},
+			"size": {
+			  "type": "long",
+			  "index": false
+			},
+			"width": {
+			  "type": "long"
+			},
+			"height": {
+			  "type": "long"
+			},
+			"colors": {
+			  "type": "nested",
+			  "properties": {
+				"h": {
+				  "type": "double"
+				},
+				"s": {
+				  "type": "double"
+				},
+				"l": {
+				  "type": "double"
+				},
+				"ratio": {
+				  "type": "double"
+				}
+			  }
+			}
+		  }
 		}
-	}
-}
+	  }
 `
 )
 
