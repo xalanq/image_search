@@ -1,4 +1,4 @@
-import 'dart:math';
+
 
 String rangeQuery<T extends num>(String name, T? min, T? max) {
   if (max == null)
@@ -72,13 +72,13 @@ class ColorParam {
     this.ratioMax,
   );
 
-  const ColorParam.color(double h, double s, double l)
-      : hMin = h - hDelta < 0 ? h + 360 - hDelta : h - hDelta,
-        hMax = h + hDelta > 360 ? h + hDelta - 360 : h + hDelta,
-        sMin = s - sDelta,
-        sMax = s + sDelta,
-        lMin = l - lDelta,
-        lMax = l + lDelta,
+  const ColorParam.color(double? h, double? s, double? l)
+      : hMin = h == null ? null : h - hDelta < 0 ? h + 360 - hDelta : h - hDelta,
+        hMax = h == null ? null : h + hDelta > 360 ? h + hDelta - 360 : h + hDelta,
+        sMin = s == null ? null : s - sDelta,
+        sMax = s == null ? null : s + sDelta,
+        lMin = l == null ? null : l - lDelta,
+        lMax = l == null ? null : l + lDelta,
         ratioMin = gRatioMin,
         ratioMax = gRatioMax;
 

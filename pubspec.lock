@@ -204,6 +204,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.0"
+  extended_text:
+    dependency: "direct main"
+    description:
+      name: extended_text
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "7.0.0"
+  extended_text_library:
+    dependency: transitive
+    description:
+      name: extended_text_library
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "7.0.0"
   fake_async:
     dependency: transitive
     description:
@@ -653,4 +667,4 @@ packages:
     version: "3.1.0"
 sdks:
   dart: ">=2.13.0 <3.0.0"
-  flutter: ">=2.0.0"
+  flutter: ">=2.2.0"

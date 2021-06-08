@@ -2,9 +2,12 @@ import 'dart:convert';
 
 import 'package:color/color.dart' as convert_color;
 import 'package:extended_image/extended_image.dart';
+import 'package:extended_text/extended_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_search/consts.dart';
 import 'package:image_search/model/image_result.dart';
+import 'package:path/path.dart' as path;
 import 'package:url_launcher/url_launcher.dart';
 
 class ImageItem extends StatefulWidget {
@@ -20,6 +23,7 @@ class _ImageItemState extends State<ImageItem> {
   @override
   Widget build(BuildContext context) {
     final image = widget.image;
+    final imageURL = path.join(Consts.imageHost, image.path);
     print(image.title + " " + jsonEncode(image.colors[0]));
     final dominantColor =
         convert_color.HslColor(image.colors[0].h, image.colors[0].s * 100, image.colors[0].l * 100).toRgbColor();
@@ -31,8 +35,8 @@ class _ImageItemState extends State<ImageItem> {
           child: AspectRatio(
             aspectRatio: image.width / image.height,
             child: ExtendedImage.network(
-              // path.join(Consts.imageHost, image.path),
-              image.url,
+              imageURL,
+              // image.url,
               shape: BoxShape.rectangle,
               //clearMemoryCacheWhenDispose: true,
               loadStateChanged: (ExtendedImageState value) {
@@ -46,7 +50,7 @@ class _ImageItemState extends State<ImageItem> {
             ),
           ),
           onTap: () {
-            launch(image.url);
+            launch(imageURL);
           },
         ),
         SizedBox(height: 5),
@@ -55,9 +59,10 @@ class _ImageItemState extends State<ImageItem> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SelectableText(
+              ExtendedText(
                 image.title,
                 maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w500,
@@ -68,9 +73,10 @@ class _ImageItemState extends State<ImageItem> {
                 },
               ),
               SizedBox(height: 5),
-              SelectableText(
+              ExtendedText(
                 image.url,
                 maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 14,
                   color: Colors.grey,

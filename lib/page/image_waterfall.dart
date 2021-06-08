@@ -1,12 +1,11 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:image_search/data/image_data.dart';
 import 'package:image_search/model/image_result.dart';
 import 'package:image_search/model/search_param.dart';
 import 'package:image_search/widget/image_item.dart';
-import 'package:image_search/widget/push_to_refresh_header.dart';
-import 'package:pull_to_refresh_notification/pull_to_refresh_notification.dart';
-import 'package:waterfall_flow/waterfall_flow.dart';
 import 'package:loading_more_list/loading_more_list.dart';
+import 'package:waterfall_flow/waterfall_flow.dart';
 
 class ImageWaterfall extends StatefulWidget {
   final SearchParam param;
@@ -35,25 +34,19 @@ class _ImageWaterfallState extends State<ImageWaterfall> {
 
   @override
   Widget build(BuildContext context) {
-    return PullToRefreshNotification(
-      pullBackOnRefresh: false,
-      armedDragUpCancel: false,
-      onRefresh: onRefresh,
-      child: LoadingMoreCustomScrollView(
+    return LoadingMoreCustomScrollView(
         slivers: <Widget>[
-          SliverToBoxAdapter(
-            child: PullToRefreshContainer(
-                (PullToRefreshScrollNotificationInfo? info) {
-                return PullToRefreshHeader(info, dateTimeNow);
-              }),
+          SliverAppBar(
+            pinned: true,
+            title: Text("MultipleSliverDemo"),
           ),
           LoadingMoreSliverList<ImageResult>(
             SliverListConfig<ImageResult>(
               extendedListDelegate:
               const SliverWaterfallFlowDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: 300,
-                crossAxisSpacing: 5,
-                mainAxisSpacing: 5,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
               ),
               itemBuilder: (context, item, index) => ImageItem(item),
               sourceList: data,
@@ -62,7 +55,6 @@ class _ImageWaterfallState extends State<ImageWaterfall> {
             ),
           )
         ],
-      ),
     );
   }
 

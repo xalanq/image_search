@@ -33,14 +33,11 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     var param = SearchParam(
-      text: "dog",
-      color: ColorParam.color(52, 0.1, 0.85),
+      text: "cat",
+      // color: ColorParam.color(null, null, 1),
       // size: Size1024x768,
     );
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
       body: ImageWaterfall(param),
     );
   }

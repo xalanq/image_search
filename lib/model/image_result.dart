@@ -1,5 +1,5 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'package:image_search/model/color_hsl.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'image_result.g.dart';
 
