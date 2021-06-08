@@ -96,8 +96,8 @@ class SearchParam {
   final String? text;
   final SizeParam? size;
   final ColorParam? color;
-  int? skip;
-  int? limit;
+  int skip;
+  int limit;
 
   SearchParam({
     this.text,
@@ -114,9 +114,9 @@ class SearchParam {
     String? must = text == null ? null : '"must": [{"match": {"labels": "$text"}}]';
     String? filter = filterQueries.isEmpty ? null : '"filter": [${filterQueries.join(",")}]';
     String query = '"query": {"bool": {${[must, filter].where((e) => e != null).join(",")}}}';
-    String? from = skip == null ? null : '"from": $skip';
-    String? sz = limit == null ? null : '"size": $limit';
-    return '{${[from, sz, query].where((e) => e != null).join(",")}}';
+    String from = '"from": $skip';
+    String sz = '"size": $limit';
+    return '{${[from, sz, query].join(",")}}';
   }
 }
 

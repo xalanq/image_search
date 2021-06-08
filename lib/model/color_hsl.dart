@@ -1,13 +1,16 @@
-class ColorHSL {
-  double h;
-  double s;
-  double l;
-  double ratio;
+import 'package:json_annotation/json_annotation.dart';
 
-  ColorHSL({
-    required this.h,
-    required this.s,
-    required this.l,
-    required this.ratio,
-  });
+part 'color_hsl.g.dart';
+
+@JsonSerializable()
+class ColorHSL {
+  final double h;
+  final double s;
+  final double l;
+  final double ratio;
+
+  ColorHSL(this.h, this.s, this.l, this.ratio);
+
+  factory ColorHSL.fromJson(Map<String, dynamic> json) => _$ColorHSLFromJson(json);
+  Map<String, dynamic> toJson() => _$ColorHSLToJson(this);
 }

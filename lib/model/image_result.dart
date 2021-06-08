@@ -1,25 +1,33 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'package:image_search/model/color_hsl.dart';
 
-class ImageResult {
-  String path;
-  String url;
-  String landingURL;
-  List<String> labels;
-  String title;
-  int size;
-  int width;
-  int height;
-  List<ColorHSL> colors;
+part 'image_result.g.dart';
 
-  ImageResult({
-    required this.path,
-    required this.url,
-    required this.landingURL,
-    required this.labels,
-    required this.title,
-    required this.size,
-    required this.width,
-    required this.height,
-    required this.colors,
-  });
+@JsonSerializable()
+class ImageResult {
+  final String path;
+  final String url;
+  @JsonKey(name: 'landing_url')
+  final String landingURL;
+  final List<String> labels;
+  final String title;
+  final int size;
+  final int width;
+  final int height;
+  final List<ColorHSL> colors;
+
+  ImageResult(
+    this.path,
+    this.url,
+    this.landingURL,
+    this.labels,
+    this.title,
+    this.size,
+    this.width,
+    this.height,
+    this.colors,
+  );
+
+  factory ImageResult.fromJson(Map<String, dynamic> json) => _$ImageResultFromJson(json);
+  Map<String, dynamic> toJson() => _$ImageResultToJson(this);
 }
