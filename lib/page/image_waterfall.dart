@@ -1,4 +1,5 @@
 import 'package:color/color.dart' as convert_color;
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -153,19 +154,11 @@ class _ImageWaterfallState extends State<ImageWaterfall> {
                               if (c == null)
                                 data.param.color = null;
                               else {
-                                var hsl = convert_color.Color.rgb(
-                                        c.red, c.green, c.blue)
-                                    .toHslColor();
-                                data.param.color = ColorParam.color(
-                                    hsl.h.toDouble(),
-                                    hsl.s.toDouble() / 100,
-                                    hsl.l.toDouble() / 100);
-                                if (c == Colors.black)
-                                  data.param.color =
-                                      ColorParam.color(null, null, 0.0);
-                                if (c == Colors.white)
-                                  data.param.color =
-                                      ColorParam.color(null, null, 1);
+                                var hsl = convert_color.Color.rgb(c.red, c.green, c.blue).toHslColor();
+                                data.param.color =
+                                    ColorParam.color(hsl.h.toDouble(), hsl.s.toDouble() / 100, hsl.l.toDouble() / 100);
+                                if (c == Colors.black) data.param.color = ColorParam.color(null, null, 0.0);
+                                if (c == Colors.white) data.param.color = ColorParam.color(null, null, 1);
                               }
                               data.refresh(true);
                             });
@@ -182,11 +175,18 @@ class _ImageWaterfallState extends State<ImageWaterfall> {
         ),
         LoadingMoreSliverList<ImageResult>(
           SliverListConfig<ImageResult>(
-            extendedListDelegate:
-                SliverWaterfallFlowDelegateWithMaxCrossAxisExtent(
+            extendedListDelegate: SliverWaterfallFlowDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 300,
               crossAxisSpacing: 16,
               mainAxisSpacing: 16,
+              collectGarbage: (List<int> garbages) {
+                garbages.forEach((index) {
+                  final provider = ExtendedNetworkImageProvider(
+                    data[index].imageURL,
+                  );
+                  provider.evict();
+                });
+              },
             ),
             itemBuilder: (context, item, index) => ImageItem(item),
             sourceList: data,

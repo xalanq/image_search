@@ -11,7 +11,6 @@ class ColorHSL {
 
   ColorHSL(this.h, this.s, this.l, this.ratio);
 
-  factory ColorHSL.fromJson(Map<String, dynamic> json) =>
-      _$ColorHSLFromJson(json);
+  factory ColorHSL.fromJson(Map<String, dynamic> json) => _$ColorHSLFromJson(json);
   Map<String, dynamic> toJson() => _$ColorHSLToJson(this);
 }

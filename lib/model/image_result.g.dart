@@ -16,14 +16,11 @@ ImageResult _$ImageResultFromJson(Map<String, dynamic> json) {
     json['size'] as int,
     json['width'] as int,
     json['height'] as int,
-    (json['colors'] as List<dynamic>)
-        .map((e) => ColorHSL.fromJson(e as Map<String, dynamic>))
-        .toList(),
+    (json['colors'] as List<dynamic>).map((e) => ColorHSL.fromJson(e as Map<String, dynamic>)).toList(),
   );
 }
 
-Map<String, dynamic> _$ImageResultToJson(ImageResult instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$ImageResultToJson(ImageResult instance) => <String, dynamic>{
       'path': instance.path,
       'url': instance.url,
       'landing_url': instance.landingURL,
